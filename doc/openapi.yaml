@@ -1,0 +1,107 @@
+# Documentación de la API
+# ver https://swagger.io/specification/
+
+# versión de OpenAPI
+openapi: 3.0.3
+
+# información general de la API
+info:
+  title: API REST
+  description: Api para la obtencion y envio de datos a una base de datos
+  version: 1.0.0
+
+# servidores disponibles para ejecutar la API
+servers:
+  - url: 'http://192.168.1.133:3000'
+    description: 'Servidor de desarrollo'
+
+# Rutas de acceso (endpoints o recursos) definidas en la API
+paths:
+  /datos:
+    # métodos HTTP admitidos
+    get:
+      summary: Devuelve todos los datos de la BBDD
+      tags:
+        - público
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dato'
+        '401':
+          description: Devolucion incorrecta.
+        '5XX':
+          description: Error del servidor.
+    post:
+      summary: Crea un dato nuevo.
+      # especifica los datos que deben incluirse en el cuerpo de la petición HTTP
+      tags:
+        - público
+      requestBody:
+        required: true
+        content:
+          # formato de datos de formulario
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - fecha
+      # respuestas que puede devolver el servidor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fecha:
+                    type: string
+                  ppm:
+                    type: integer
+                  longitud:
+                    type: integer
+                  laitud:
+                    type: integer
+                $ref: '#/components/schemas/Dato'
+        '401':
+          description: No autorizado
+        '5XX':
+          description: Error del servidor.
+  /datos/obtenerReciente:
+    get:
+      summary: Devuelve el ultimo valor
+      tags:
+        - público
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dato'
+        '401':
+          description: No autorizado
+        '5XX':
+          description: Error del servidor.
+components:
+  schemas:
+    Dato:
+      type: object
+      properties:
+        fecha:
+          type: string
+          description: fecha del insert
+        ppm:
+          type: integer
+          description: dato de la concentracion
+        latitud:
+          type: integer
+          description: latitud actual
+        longitud:
+          type: integer
+          description: longitud actual
